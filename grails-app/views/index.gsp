@@ -1,6 +1,18 @@
 <!doctype html>
 <html>
 <head>
+    <title>BarCrawler</title>
+</head>
+<body>
+    <div id="app"></div>
+    <asset:javascript src="bundle.js" />
+</body>
+</html>
+
+
+<!-- <!doctype html>
+<html>
+<head>
     <meta name="layout" content="main"/>
     <title>Welcome to Grails</title>
 </head>
@@ -75,3 +87,4 @@
 
 </body>
 </html>
+ -->

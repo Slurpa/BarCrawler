@@ -10,3 +10,5 @@ out/
 .project
 .settings
 .classpath
+grails-app/assets/javascripts/bundle.js
+node_modules/
