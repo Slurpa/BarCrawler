@@ -1,3 +1,6 @@
-const React = require('react')
+const React = require('react');
+const Location = require('./app/location.js');
 
-alert('Hello From React!');
+Location();
+
+
