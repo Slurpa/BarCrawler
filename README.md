@@ -6,6 +6,10 @@
 * Grails 3.3.8
 
 ## Environment Setup
+
+1. Use `grails-app/conf/maps.yml.example` to create `maps.yml`.
+2. Add the Maps API key to `maps.yml`.
+
 ```
 git clone git@github.com BarCrawler
 cd BarCrawler

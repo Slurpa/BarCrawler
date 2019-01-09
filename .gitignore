@@ -12,3 +12,4 @@ out/
 .classpath
 grails-app/assets/javascripts/bundle.js
 node_modules/
+grails-app/conf/maps.yml

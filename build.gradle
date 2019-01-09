@@ -58,7 +58,13 @@ dependencies {
     compile "org.hibernate:hibernate-core:5.1.5.Final"
     compile "org.grails.plugins:gsp"
     console "org.grails:grails-console"
+
+    //used for external config files
+    compile 'org.grails.plugins:external-config:1.2.2'
+
+    // Google Maps Java Client
     implementation "com.google.maps:google-maps-services:0.9.1"
+
     profile "org.grails.profiles:web"
     runtime "org.glassfish.web:el-impl:2.1.2-b03"
     runtime "com.h2database:h2"
