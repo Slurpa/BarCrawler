@@ -59,6 +59,9 @@ dependencies {
     compile "org.grails.plugins:gsp"
     console "org.grails:grails-console"
 
+    //web-based sandbox console
+    compile 'org.grails.plugins:grails-console:2.1.1'
+
     //used for external config files
     compile 'org.grails.plugins:external-config:1.2.2'
 
