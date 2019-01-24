@@ -10,6 +10,7 @@ class UrlMappings {
         }
 
         "/"(controller: 'index')
+        "/api-test"(controller: 'test')
 
         "500"(view:'/error')
         "404"(view:'/notFound')
