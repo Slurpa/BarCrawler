@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { PropTypes as T } from 'react'
 import ReactDOM from 'react-dom'
 
-import ScriptCache from '../lib/ScriptCache'
+import cache from '../lib/ScriptCache'
 import GoogleApi from '../lib/GoogleApi'
 
 const defaultMapConfig = {};
@@ -43,7 +43,7 @@ export const wrapper = (options) => (WrappedComponent) => {
                     loaded: true,
                     map: this.map,
                     google: window.google
-                });
+                })
             });
         }
 
@@ -62,7 +62,7 @@ export const wrapper = (options) => (WrappedComponent) => {
                 map: this.state.map,
                 google: this.state.google,
                 mapComponent: this.refs.map
-            })
+            });
             return (
                 <div>
                     <WrappedComponent {...props} />

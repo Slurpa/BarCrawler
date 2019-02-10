@@ -3,7 +3,7 @@ let scriptMap = new Map();
 
 export const ScriptCache = (function(global) {
     return function ScriptCache (scripts) {
-        const Cache = {};
+        const Cache = {}
 
         Cache._onLoad = function (key) {
             return (cb) => {
@@ -12,6 +12,8 @@ export const ScriptCache = (function(global) {
                     stored.promise.then(() => {
                         stored.error ? cb(stored.error) : cb(null, stored)
                     })
+                } else {
+                    // TODO:
                 }
             }
         };
@@ -91,10 +93,10 @@ export const ScriptCache = (function(global) {
                 tag:    Cache._scriptTag(key, script),
                 onLoad: Cache._onLoad(key)
             }
-        });
+        })
 
         return Cache;
     }
-})(window);
+})(window)
 
 export default ScriptCache;

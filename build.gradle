@@ -11,18 +11,11 @@ buildscript {
 }
 
 plugins {
-    id "com.moowork.node" version "0.12"
+    id "com.moowork.node" version "1.2.0"
 }
 
 version "0.1"
 group "barcrawler"
-
-node {
-    version = '5.10.1'
-    npmVersion = '3.8.3'
-    distBaseUrl = 'https://nodejs.org/dist'
-    download = true
-}
 
 apply plugin:"eclipse"
 apply plugin:"idea"
@@ -30,6 +23,7 @@ apply plugin:"war"
 apply plugin:"org.grails.grails-web"
 apply plugin:"asset-pipeline"
 apply plugin:"org.grails.grails-gsp"
+apply plugin: "com.moowork.node"
 
 repositories {
     mavenLocal()
@@ -96,3 +90,4 @@ assetCompile.dependsOn(['npmInstall', 'npm_run_bundle'])
 
 //Generate webpack bundle on file changes
 task watch(dependsOn: ['npmInstall', 'npm_run_watch'])
+
