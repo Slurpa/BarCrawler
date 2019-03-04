@@ -1,7 +1,14 @@
-const React = require('react');
-const Location = require('./app/location.js');
-import { wrapper } from "./app/GoogleApiComponent";
 
-Location();
-wrapper();
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import MapContainer from "./components/MapContainerComponent";
+
+
+
+const Container = (
+    <MapContainer/>
+);
+const mountNode = document.querySelector('#app');
+ReactDOM.render(Container, mountNode);
 

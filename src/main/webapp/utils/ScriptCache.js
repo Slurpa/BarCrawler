@@ -1,25 +1,42 @@
 let counter = 0;
-let scriptMap = new Map();
+let scriptMap = typeof window !== 'undefined' && window._scriptMap || new Map();
+const window = require('./WindowOrGlobal');
 
 export const ScriptCache = (function(global) {
-    return function ScriptCache (scripts) {
-        const Cache = {}
+    global._scriptMap = global._scriptMap || scriptMap;
+    return function ScriptCache(scripts) {
+        const Cache = {};
 
-        Cache._onLoad = function (key) {
-            return (cb) => {
+        Cache._onLoad = function(key) {
+            return (callBack) => {
+                let registered = true;
+
+                function unregister() {
+                    registered = false;
+                }
+
                 let stored = scriptMap.get(key);
+
                 if (stored) {
                     stored.promise.then(() => {
-                        stored.error ? cb(stored.error) : cb(null, stored)
-                    })
-                } else {
-                    // TODO:
+                        if (registered) {
+                            stored.error ? callBack(stored.error) : callBack(null, stored)
+                        }
+
+                        return stored;
+                    });
                 }
+
+                return unregister;
             }
         };
 
         Cache._scriptTag = (key, src) => {
             if (!scriptMap.has(key)) {
+                // Server side rendering environments don't always have access to the `document` global.
+                // In these cases, we're not going to be able to return a script tag, so just return null.
+                if (typeof document === 'undefined') return null;
+
                 let tag = document.createElement('script');
                 let promise = new Promise((resolve, reject) => {
                     let resolved = false,
@@ -29,8 +46,8 @@ export const ScriptCache = (function(global) {
                     tag.type = 'text/javascript';
                     tag.async = false; // Load in order
 
-                    const cbName = `loaderCB${counter++}${Date.now()}`;
-                    let cb;
+                    const callBackName = `loaderCB${counter++}${Date.now()}`;
+                    let callBack;
 
                     let handleResult = (state) => {
                         return (evt) => {
@@ -38,22 +55,21 @@ export const ScriptCache = (function(global) {
                             if (state === 'loaded') {
                                 stored.resolved = true;
                                 resolve(src);
-                                // stored.handlers.forEach(h => h.call(null, stored))
-                                // stored.handlers = []
+
                             } else if (state === 'error') {
                                 stored.errored = true;
-                                // stored.handlers.forEach(h => h.call(null, stored))
-                                // stored.handlers = [];
                                 reject(evt)
                             }
+                            stored.loaded = true;
 
                             cleanup();
                         }
                     };
 
                     const cleanup = () => {
-                        if (global[cbName] && typeof global[cbName] === 'function') {
-                            global[cbName] = null;
+                        if (global[callBackName] && typeof global[callBackName] === 'function') {
+                            global[callBackName] = null;
+                            delete global[callBackName]
                         }
                     };
 
@@ -65,8 +81,8 @@ export const ScriptCache = (function(global) {
 
                     // Pick off callback, if there is one
                     if (src.match(/callback=CALLBACK_NAME/)) {
-                        src = src.replace(/(callback=)[^\&]+/, `$1${cbName}`)
-                        cb = window[cbName] = tag.onload;
+                        src = src.replace(/(callback=)[^\&]+/, `$1${callBackName}`)
+                        callBack = window[callBackName] = tag.onload;
                     } else {
                         tag.addEventListener('load', tag.onload)
                     }
@@ -74,6 +90,7 @@ export const ScriptCache = (function(global) {
 
                     tag.src = src;
                     body.appendChild(tag);
+
                     return tag;
                 });
                 let initialState = {
@@ -89,14 +106,19 @@ export const ScriptCache = (function(global) {
 
         Object.keys(scripts).forEach(function(key) {
             const script = scripts[key];
+
+            const tag = window._scriptMap.has(key) ?
+                window._scriptMap.get(key).tag :
+                Cache._scriptTag(key, script);
+
             Cache[key] = {
-                tag:    Cache._scriptTag(key, script),
-                onLoad: Cache._onLoad(key)
+                tag: tag,
+                onLoad: Cache._onLoad(key),
             }
-        })
+        });
 
         return Cache;
     }
-})(window)
+})(window);
 
 export default ScriptCache;

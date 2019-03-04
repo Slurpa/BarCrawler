@@ -1,18 +1,23 @@
 export const GoogleApi = function(opts) {
     opts = opts || {};
 
-    const apiKey = opts.apiKey;
-    const libraries = opts.libraries || [];
-    const client = opts.client;
-    const URL = 'https://maps.googleapis.com/maps/api/js';
+    if (!opts.hasOwnProperty('apiKey')) {
+        throw new Error('You must pass an apiKey to use GoogleApi');
+    }
 
-    const googleVersion = '3.22';
+    const apiKey = opts.apiKey;
+    const libraries = opts.libraries || ['places'];
+    const client = opts.client;
+    const URL = opts.url || 'https://maps.googleapis.com/maps/api/js';
+
+    const googleVersion = opts.version || '3.31';
+
     let script = null;
-    let google = window.google = null;
+    let google = (typeof window !== 'undefined' && window.google) || null;
     let loading = false;
     let channel = null;
-    let language = null;
-    let region = null;
+    let language = opts.language;
+    let region = opts.region || null;
 
     let onLoadEvents = [];
 
@@ -26,17 +31,19 @@ export const GoogleApi = function(opts) {
             v: googleVersion,
             channel: channel,
             language: language,
-            region: region
-        }
+            region: region,
+            onerror: 'ERROR_FUNCTION'
+        };
 
         let paramStr = Object.keys(params)
             .filter(k => !!params[k])
-            .map(k => `${k}=${params[k]}`).join('&');
+            .map(k => `${k}=${params[k]}`)
+            .join('&');
 
         return `${url}?${paramStr}`;
-    }
+    };
 
     return url();
-}
+};
 
-export default GoogleApi
+export default GoogleApi;
